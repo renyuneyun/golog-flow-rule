@@ -6,7 +6,8 @@
 
 % actions
 
-primitive_action(pr(Pin, Pout)).
+primitive_action(pr_at(Pin, Pout)).
+primitive_action(pr_ob(Pin, Pout)).
 
 primitive_action(edit1(X, Vnew)).
 primitive_action(edit2(X, Vnew, Pout)).
@@ -27,7 +28,8 @@ primitive_action(del7(X, V, Pin)).
 primitive_action(del8(X, V, Pin, Pout)).
 
 % preconditions
-poss(pr(Pin, Pout), S) :- (attr0(X, V, Pin, S); obligation0(Ob, X, Cond, Pin, S)), !.
+poss(pr_at(Pin, Pout), S) :- attr0(X, V, Pin, S), !.
+poss(pr_ob(Pin, Pout), S) :- obligation0(Ob, X, Cond, Pin, S), !.
 
 poss(edit1(X, Vnew), S) :- attr1(X, V, Pin, Pout, S), !.
 poss(edit2(X, Vnew, Pout), S) :- attr1(X, V, Pin, Pout, S), !.
@@ -70,7 +72,7 @@ obligation1(Ob, X, Cond, Pin, Pout, do(A, S)) :-
 
 obligation1(Ob, X, Cond, Pin, Pout, do(A, S)) :-
       obligation0(Ob, X, Cond, Pin, S),
-      A = pr(Pin, Pout)
+      A = pr_ob(Pin, Pout)
       .
 
 % Formula (25), where v_{new} and v are replaced with v and v_{old}
@@ -114,7 +116,7 @@ attr1(X, V, Pin, Pout, do(A, S)) :-
       .
 
 attr1(X, V, Pin, Pout, do(A, S)) :-
-      attr0(X, V, Pin, S), A = pr(Pin, Pout).
+      attr0(X, V, Pin, S), A = pr_at(Pin, Pout).
 
 % Default behaviour -- things were true will remain true
 
@@ -129,6 +131,11 @@ restoreSitArg(attr0(X,V,Pin),S,attr0(X,V,Pin,S)). % Not necessary?
 restoreSitArg(attr1(X,V,Pin,Pout),S,attr1(X,V,Pin,Pout,S)). % Not necessary?
 restoreSitArg(obligation0(Ob,X,Cond,Pin),S,obligation0(Ob,X,Cond,Pin,S)). % Not necessary?
 restoreSitArg(obligation1(Ob,X,Cond,Pin,Pout),S,obligation0(Ob,X,Cond,Pin,Pout,S)). % Not necessary?
+
+
+% Helpers
+
+proc(pr(Pin, Pout), pr_at(Pin, Pout) : pr_ob(Pin, Pout)).
 
 
 % Knowledge Base
