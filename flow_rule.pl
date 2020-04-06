@@ -27,7 +27,7 @@ primitive_action(del7(X, V, Pin)).
 primitive_action(del8(X, V, Pin, Pout)).
 
 % preconditions
-poss(pr(Pin, Pout), S) :- attr0(X, V, Pin, S), !.
+poss(pr(Pin, Pout), S) :- (attr0(X, V, Pin, S); obligation0(Ob, X, Cond, Pin, S)), !.
 
 poss(edit1(X, Vnew), S) :- attr1(X, V, Pin, Pout, S), !.
 poss(edit2(X, Vnew, Pout), S) :- attr1(X, V, Pin, Pout, S), !.
@@ -48,6 +48,30 @@ poss(del7(X, V, Pin), S) :- attr1(X, V, Pin, Pout, S), !.
 poss(del8(X, V, Pin, Pout), S) :- attr1(X, V, Pin, Pout, S), !.
 
 % successor-state axioms
+
+% Formula (35)
+
+obligation1(Ob, X, Cond, Pin, Pout, do(A, S)) :-
+      obligation1(Ob, X, Cond, Pin, Pout, S),
+      \+ (
+            attr1(X, V, Pin2, Pout2, S),
+            (
+                  A = del1(X);
+                  A = del2(X, Pout);
+                  A = del3(X, Pin);
+                  A = del4(X, Pin, Pout);
+                  A = del5(X, V);
+                  A = del6(X, V, Pout);
+                  A = del7(X, V, Pin);
+                  A = del8(X, V, Pin, Pout)
+            )
+      )
+      .
+
+obligation1(Ob, X, Cond, Pin, Pout, do(A, S)) :-
+      obligation0(Ob, X, Cond, Pin, S),
+      A = pr(Pin, Pout)
+      .
 
 % Formula (25), where v_{new} and v are replaced with v and v_{old}
 attr1(X, V, Pin, Pout, do(A, S)) :-
@@ -92,10 +116,19 @@ attr1(X, V, Pin, Pout, do(A, S)) :-
 attr1(X, V, Pin, Pout, do(A, S)) :-
       attr0(X, V, Pin, S), A = pr(Pin, Pout).
 
+% Default behaviour -- things were true will remain true
+
 attr0(X, V, Pin, do(A, S)) :- attr0(X, V, Pin, S).
+
+obligation0(Ob, X, Cond, Pin, do(A, S)) :- obligation0(Ob, X, Cond, Pin, S).
+
+
+% Required by Golog?
 
 restoreSitArg(attr0(X,V,Pin),S,attr0(X,V,Pin,S)). % Not necessary?
 restoreSitArg(attr1(X,V,Pin,Pout),S,attr1(X,V,Pin,Pout,S)). % Not necessary?
+restoreSitArg(obligation0(Ob,X,Cond,Pin),S,obligation0(Ob,X,Cond,Pin,S)). % Not necessary?
+restoreSitArg(obligation1(Ob,X,Cond,Pin,Pout),S,obligation0(Ob,X,Cond,Pin,Pout,S)). % Not necessary?
 
 
 % Knowledge Base
@@ -106,7 +139,14 @@ attr0(c, 45, pi1, s0).
 attr0(d, "p", pi2, s0).
 attr0(e, "k", pi2, s0).
 
+obligation0(oa, a, null, pi1, s0).
+obligation0(ob, b, null, pi1, s0).
+obligation0(od, d, onImport, pi2, s0).
+
+% Example query
+
 :- do(pr(pi2, po1), s0, S4), do(edit5(d, "p", "m"), S4, SN), attr1(d, V, Pin, Pout, SN).
+:- do(pr(pi2, po1), s0, S4), do(edit5(d, "p", "m"), S4, SN), obligation1(Ob, X, Cond, Pin, Pout, SN).
 % :- do(pr(pi1, po1), s0, S1), do(pr(pi2, po1), S1, S2), do(pr(pi2, po2), S2, S3), do(del1(b), S3, S4), do(del6(d, "p", po1), S4, SN), attr1(X, V, Pin, Pout, SN).
 % :- do(pr(pi1, po1), s0, S1), do(pr(pi2, po1), S1, S2), do(pr(pi2, po2), S2, S3), do(del1(b), S3, S4), do(edit5(d, "p", "m"), S4, SN), attr1(X, V, Pin, Pout, SN).
 % :- do(del1(b), s0, S1), do(del2(c, 43), S1, SN), do(del2(d, "p"), S2, SN), attribute(X, V, SN). % Doesn't work because del2(c, 43) can't be executed.
