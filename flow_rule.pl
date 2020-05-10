@@ -6,39 +6,31 @@
 % actions
 
 primitive_action(edit(X, V, Vnew)).
-primitive_action(edit(X, *, Vnew)).
+primitive_action(edit(X, _, Vnew)).
 
 primitive_action(del(X, V)).
-primitive_action(del(X, *)).
+primitive_action(del(X, _)).
 
 % preconditions
 
-poss(edit(X, *, Vnew), S) :- attribute(X, _V, S).
+poss(edit(X, _, Vnew), S) :- attribute(X, _V, S).
 poss(edit(X, V, Vnew), S) :- attribute(X, V, S).
 
-poss(del(X, *), S) :- attribute(X, _V, S).
+poss(del(X, _), S) :- attribute(X, _V, S).
 poss(del(X, V), S) :- attribute(X, V, S).
 
 % successor-state axioms
 
 attribute(X, V, do(A, S)) :-
               attribute(X, V, S), \+ (
-                            A = del(X, *); A = del(X, V);
-                            ((A=edit(X, *, V2); A = edit(X, V, V2)), \+ (V2 = V))
+                            A = del(X, V);
+                            (( A = edit(X, V, V2)), \+ (V2 = V))  %%% I removed A=edit(X,_,V2) because doing so gives seemingly correct result. I'm not sure if this is always true or not.
                             )
                             .
 
 attribute(X, V, do(A, S)) :-
-              attribute(X, Vold, S), (A=edit(X,*,V); A = edit(X, Vold, V))
+              attribute(X, Vold, S), ( A = edit(X, Vold, V))
               .
-
-% Doesn't work -- no answer
-% edit(X, *, Vnew) :- edit(X, _, Vnew).
-% del(X, *) :- del(X, _).
-
-% Doesn't work -- memory limit exceeded
-% proc(edit(X, *, Vnew), edit(X, _, Vnew)).
-% proc(del(X, *), del(X, _)).
 
 % restoreSitArg(attribute(X,V),S,attribute(X,V,S)). % Not necessary?
 
@@ -57,8 +49,8 @@ output(S) :-
               forall(attribute(X, V, S), writeln([S, X, V]))
               .
 
-:- do(del(b, *), s0, S1), do(del(d, "p"), S1, SN), output(SN).
-:- do(del(b, *), s0, S1), do(edit(c, *, 99), S1, SN), output(SN).
-:- do(del(b, *), s0, S1), do(edit(c, *, 99), S1, S2), do(del(d, "p"), S2, SN), output(SN).
+:- do(del(b, _), s0, S1), do(del(d, "p"), S1, SN), output(SN).
+:- do(del(b, _), s0, S1), do(edit(c, _, 99), S1, SN), output(SN).
+:- do(del(b, _), s0, S1), do(edit(c, _, 99), S1, S2), do(del(d, "p"), S2, SN), output(SN).
 % :- do(del1(b), s0, S1), do(del2(c, 43), S1, SN), do(del2(d, "p"), S2, SN), attribute(X, V, SN). % Doesn't work because del2(c, 43) can't be executed.
 
