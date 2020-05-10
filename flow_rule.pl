@@ -6,8 +6,10 @@
 % actions
 
 primitive_action(edit(X, V, Vnew)).
+primitive_action(edit(X, *, Vnew)).
 
 primitive_action(del(X, V)).
+primitive_action(del(X, *)).
 
 % preconditions
 
@@ -22,13 +24,21 @@ poss(del(X, V), S) :- attribute(X, V, S).
 attribute(X, V, do(A, S)) :-
               attribute(X, V, S), \+ (
                             A = del(X, *); A = del(X, V);
-                            (\+ (V2 = V), (A = edit(X, *, V2) ; A = edit(X, V, V2)))
+                            ((A=edit(X, *, V2); A = edit(X, V, V2)), \+ (V2 = V))
                             )
                             .
 
 attribute(X, V, do(A, S)) :-
-              attribute(X, Vold, S), (A = edit(X, *, V); A = edit(X, Vold, V))
+              attribute(X, Vold, S), (A=edit(X,*,V); A = edit(X, Vold, V))
               .
+
+% Doesn't work -- no answer
+% edit(X, *, Vnew) :- edit(X, _, Vnew).
+% del(X, *) :- del(X, _).
+
+% Doesn't work -- memory limit exceeded
+% proc(edit(X, *, Vnew), edit(X, _, Vnew)).
+% proc(del(X, *), del(X, _)).
 
 % restoreSitArg(attribute(X,V),S,attribute(X,V,S)). % Not necessary?
 
@@ -43,9 +53,12 @@ attribute(d, "p", s0).
 
 
 output(S) :-
-              forall(attribute(X, V, S), writeln([X, V]))
+              writeln(''),
+              forall(attribute(X, V, S), writeln([S, X, V]))
               .
 
 :- do(del(b, *), s0, S1), do(del(d, "p"), S1, SN), output(SN).
+:- do(del(b, *), s0, S1), do(edit(c, *, 99), S1, SN), output(SN).
+:- do(del(b, *), s0, S1), do(edit(c, *, 99), S1, S2), do(del(d, "p"), S2, SN), output(SN).
 % :- do(del1(b), s0, S1), do(del2(c, 43), S1, SN), do(del2(d, "p"), S2, SN), attribute(X, V, SN). % Doesn't work because del2(c, 43) can't be executed.
 
