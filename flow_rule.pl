@@ -198,7 +198,7 @@ attr1(X, N, T, V, Pin, Pout, do(A, S)) :-
                 A = edit(*, *, *, V2, Pin, *);
                 A = edit(*, *, *, V2, *, Pout);
                 A = edit(*, *, *, V2, *, *)
-            ), \+ (V2 = V)
+            ), (V2 \== V)
         )
     )
     .
