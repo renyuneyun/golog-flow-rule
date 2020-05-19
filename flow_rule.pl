@@ -14,73 +14,11 @@ primitive_action(del(N, T, V, Pin, Pout)).
 
 % preconditions
 
-poss(pr(Pin, Pout), S) :- attr0(X, N, T, V, Pin, S); obligation0(Ob, X, Cond, Pin, S).
+poss(pr(Pin, Pout), S) :- true.
 
-poss(edit(N, T, V, Vnew, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, T, V, Vnew, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, T, V, Vnew, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, T, V, Vnew, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, T, *, Vnew, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, T, *, Vnew, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, T, *, Vnew, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, T, *, Vnew, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, *, V, Vnew, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, *, V, Vnew, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, *, V, Vnew, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, *, V, Vnew, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, *, *, Vnew, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, *, *, Vnew, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, *, *, Vnew, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(N, *, *, Vnew, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, T, V, Vnew, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, T, V, Vnew, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, T, V, Vnew, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, T, V, Vnew, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, T, *, Vnew, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, T, *, Vnew, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, T, *, Vnew, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, T, *, Vnew, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, *, V, Vnew, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, *, V, Vnew, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, *, V, Vnew, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, *, V, Vnew, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, *, *, Vnew, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, *, *, Vnew, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, *, *, Vnew, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(edit(*, *, *, Vnew, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
+poss(edit(N, T, V, Vnew, Pin, Pout), S) :- true.
 
-poss(del(N, T, V, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, T, V, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, T, V, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, T, V, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, T, *, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, T, *, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, T, *, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, T, *, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, *, V, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, *, V, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, *, V, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, *, V, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, *, *, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, *, *, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, *, *, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(N, *, *, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, T, V, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, T, V, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, T, V, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, T, V, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, T, *, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, T, *, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, T, *, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, T, *, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, *, V, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, *, V, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, *, V, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, *, V, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, *, *, Pin, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, *, *, Pin, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, *, *, *, Pout), S) :- attr1(X, N, T, V, Pin, Pout, S).
-poss(del(*, *, *, *, *), S) :- attr1(X, N, T, V, Pin, Pout, S).
+poss(del(N, T, V, Pin, Pout), S) :- true.
 
 % successor-state axioms
 
