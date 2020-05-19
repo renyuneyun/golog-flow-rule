@@ -6,11 +6,6 @@
 :- [helper].
 
 
-% Maybe useful for Golog (never proven to be useful)
-restoreSitArg(attr0(X,N,T,V,Pin),S,attr0(X,N,T,V,Pin,Pout,S)).
-restoreSitArg(obligation0(Ob,X,Cond,Pin),S,obligation0(Ob,X,Cond,Pin,S)).
-
-
 % Persist attr0 and obligation0
 
 attr0(X, N, T, Vold, Pin, do(A, S)) :- attr0(X, N, T, Vold, Pin, S).
