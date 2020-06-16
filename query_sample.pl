@@ -1,34 +1,19 @@
 %%% Sample queries for debugging
-
-:- discontiguous attr0/6.
-:- discontiguous obligation0/5.
+:- multifile attr/6.
 
 :- [helper].
 
 
-% Persist attr0 and obligation0
+attr(a, name1, "int", 2, pi1, s0).
+attr(b, name2, "str", "123", pi1, s0).
+attr(c, name3, "int", 45, pi1, s0).
+attr(d, name4, "str", "p", pi2, s0).
+attr(e, name5, "str", "k", pi2, s0).
 
-attr0(X, N, T, Vold, Pin, do(A, S)) :- attr0(X, N, T, Vold, Pin, S).
 
-obligation0(Ob, X, Cond, Pin, do(A, S)) :- obligation0(Ob, X, Cond, Pin, S).
+:- do(pr(pi1, []) : pr(pi2, [po1]) : end(po1), s0, SN), outputs(SN).
 
-
-% Knowledge Base
-
-attr0(a, name1, "int", 2, pi1, s0).
-attr0(b, name2, "str", "123", pi1, s0).
-attr0(c, name3, "int", 45, pi1, s0).
-attr0(d, name4, "str", "p", pi2, s0).
-attr0(e, name5, "str", "k", pi2, s0).
-
-obligation0("oa", a, nil, pi1, s0).
-obligation0("ob", b, nil, pi1, s0).
-obligation0("od", d, "OnImport", pi2, s0).
-
-:- do(pr(pi2, po1) : edit(*, "str", "p", "str", "m", *, *), s0, SN), output(SN).
-
-:- do(pr(pi2, po1), s0, S4), do(edit(*, *, "p", "str", "m", *, *), S4, SN), output(SN).
-:- do(pr(pi1, po1), s0, S1), do(pr(pi2, po1), S1, S2), do(pr(pi2, po2), S2, S3), do(del(name2, *, *, *, *), S3, S4), do(del(*, *, "p", *, po1), S4, SN), output(SN).
-:- do(pr(pi1, po1), s0, S1), do(pr(pi2, po1), S1, S2), do(pr(pi2, po2), S2, S3), do(del(name2, *, *, *, *), S3, S4), do(edit(*, *, "p", "str", "m", *, *), S4, SN), output(SN).
-:- do(pr(pi1, po1), s0, S1), do(del(*, "int", 43, *, *), S1, S2), do(del(*, "str", "p", *, *), S2, SN), output(SN).
+:- do(pr(pi1, []) : pr(pi2, [po1]) : edit(name4, "str", "p", "str", "m", pi2, po1) : end(po1), s0, SN), outputs(SN).
+:- do(pr(pi1, []) : pr(pi2, [po1]) : del(name4, "str", "p", pi2, po1) : end(po1), s0, SN), outputs(SN).
+:- do(pr(pi1, [po1]) : pr(pi2, [po1]) : edit(name4, "str", "p", "str", "m", pi2, po1) : end(po1), s0, SN), outputs(SN).
 
