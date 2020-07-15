@@ -1,4 +1,5 @@
 :- multifile attr/6.
+:- multifile obligation/5.
 
 % Golog interpreter
 :- [golog_swi].
@@ -25,20 +26,61 @@ poss(end(Pout), S) :- true.
 
 % successor-state axioms
 
-% obligation1(Ob, X, Cond, Pin, Pout, do(A, S)) :-
-%     obligation1(Ob, X, Cond, Pin, Pout, S),
-%     \+ (
-%         attr1(X, N, T, V, Pin, Pout, S),
-%         (
-%             A = del(N, T, V, Pin, Pout)
-%         )
-%     )
-%     .
+prop_obligation(Ob, X, Cond, Pin, Pout, do(A, S)) :-
+    prop_obligation(Ob, X, Cond, Pin, Pout, S),
+    \+ (
+        % prop_attr(X, N, T, V, Pin, Pout, S),
+        (
+            A = del(N, T, V, Pin, Pout);
+            A = del(N, T, V, Pin, *);
+            A = del(N, T, V, *, Pout);
+            A = del(N, T, V, *, *);
+            A = del(N, T, *, Pin, Pout);
+            A = del(N, T, *, Pin, *);
+            A = del(N, T, *, *, Pout);
+            A = del(N, T, *, *, *);
+            A = del(N, *, V, Pin, Pout);
+            A = del(N, *, V, Pin, *);
+            A = del(N, *, V, *, Pout);
+            A = del(N, *, V, *, *);
+            A = del(N, *, *, Pin, Pout);
+            A = del(N, *, *, Pin, *);
+            A = del(N, *, *, *, Pout);
+            A = del(N, *, *, *, *);
+            A = del(*, T, V, Pin, Pout);
+            A = del(*, T, V, Pin, *);
+            A = del(*, T, V, *, Pout);
+            A = del(*, T, V, *, *);
+            A = del(*, T, *, Pin, Pout);
+            A = del(*, T, *, Pin, *);
+            A = del(*, T, *, *, Pout);
+            A = del(*, T, *, *, *);
+            A = del(*, *, V, Pin, Pout);
+            A = del(*, *, V, Pin, *);
+            A = del(*, *, V, *, Pout);
+            A = del(*, *, V, *, *);
+            A = del(*, *, *, Pin, Pout);
+            A = del(*, *, *, Pin, *);
+            A = del(*, *, *, *, Pout);
+            A = del(*, *, *, *, *)
+        );
+        A = end(Pout)
+    )
+    .
 
-% obligation1(Ob, X, Cond, Pin, Pout, do(A, S)) :-
-%     obligation0(Ob, X, Cond, Pin, S),
-%     A = pr(Pin, Pout)
-%     .
+prop_obligation(Ob, X, Cond, Pin, Pout, do(A, S)) :-
+    obligation(Ob, X, Cond, Pin, S),
+    A = pr(Pin, Ps), member(Pout, Ps)
+    .
+
+obligation(Ob, X, Cond, P, do(A, S)) :-
+    obligation(Ob, X, Cond, P, S), A \= pr(P, Ps)
+    .
+
+obligation(Ob, X, Cond, P, do(A, S)) :-
+    prop_obligation(Ob, X, Cond, Pin, P, S),
+    A = end(P)
+    .
 
 prop_attr(X, N, T, V, Pin, Pout, do(A, S)) :-
     prop_attr(X, N, T, V, Pin, Pout, S),
@@ -164,12 +206,10 @@ attr(X, N, T, V, P, do(A, S)) :-
 
 attr(X, N, T, V, P, do(A, S)) :-
     prop_attr(X, N, T, V, Pin, P, S),
-    A = end(P)
+    A == end(P)
     .
 
 
 % Maybe useful for Golog (never proven to be useful)
 % restoreSitArg(attr0(X,N,T,V,Pin),S,attr0(X,N,T,V,Pin,Pout,S)).
 % restoreSitArg(obligation0(Ob,X,Cond,Pin),S,obligation0(Ob,X,Cond,Pin,S)).
-
-
