@@ -1,15 +1,15 @@
 %%% Sample queries for debugging
-:- multifile attr/7.
+:- multifile attr/5.
 :- multifile obligation/5.
 
 :- [helper].
 
 
-attr(a, name, str, "UoE", ai, [], s0).
-obligation(credit, [a], null, ai, s0).
-attr(b, sens, col, 1, ai, [], s0).
-obligation(hide, [b], null, ai, s0).
-attr(c, internal-1, credit, "ZR", ai, [], s0).
+attr(name, str, "UoE", [a, ai], s0).
+obligation(credit, [a, ai], null, ai, s0).
+attr(sens, col, 1, [b, ai], s0).
+obligation(hide, [b, ai], null, ai, s0).
+attr(internal-1, credit, "ZR", [c, ai], s0).
 
 
 % :- do(pr(ai, [ao1, ao2]) : end(ao1) : end(ao2) :
@@ -23,6 +23,8 @@ attr(c, internal-1, credit, "ZR", ai, [], s0).
 %% Too slow, trying to optimise using the method below
 
 
+% :- do(pr(ai, [ao1, ao2]), s0, S1), output(S1),
+% 	do(end(ao1) : end(ao2), S1, S2), !, outputs(S2).
 :- do(pr(ai, [ao1, ao2]) : end(ao1) : end(ao2), s0, S1), !, outputs(S1),
 	do(pr(ao1, [bi]) : end(bi) : pr(ao2, [ci]) : end(ci), S1, S2), !,
 	do(pr(bi, [bo]) : end(bo), S2, S3), !,

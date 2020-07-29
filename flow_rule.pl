@@ -1,4 +1,4 @@
-:- multifile attr/7.
+:- multifile attr/5.
 :- multifile obligation/5.
 
 % Golog interpreter
@@ -27,9 +27,9 @@ poss(end(Pout), S) :- true.
 % successor-state axioms
 
 prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
-    prop_obligation(Ob, XH, Cond, Pin, Pout, S), append([X], H, XH),
+    prop_obligation(Ob, XH, Cond, Pin, Pout, S),
     \+ (
-        prop_attr(X, N, T, V, Pin, Pout, H, S),
+        prop_attr(N, T, V, XH, S),
         (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -83,8 +83,8 @@ obligation(Ob, XHP, Cond, P, do(A, S)) :-
     append(XH, [P], XHP)
     .
 
-prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
-    prop_attr(X, N, T, V, Pin, Pout, H, S),
+prop_attr(N, T, V, H, do(A, S)) :-
+    prop_attr(N, T, V, H, S), append(_, [Pin, Pout], H),
     \+ (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -158,8 +158,8 @@ prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
     )
     .
 
-prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
-    prop_attr(X, N, Told, Vold, Pin, Pout, H, S),
+prop_attr(N, T, V, H, do(A, S)) :-
+    prop_attr(N, Told, Vold, H, S), append(_, [Pin, Pout], H),
     (
         A = edit(N, Told, Vold, T, V, Pin, Pout);
         A = edit(N, Told, Vold, T, V, Pin, *);
@@ -196,19 +196,20 @@ prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
     )
     .
 
-prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
-    attr(X, N, T, V, Pin, H, S),
-    A = pr(Pin, Ps) , member(Pout, Ps)
+prop_attr(N, T, V, Ho, do(A, S)) :-
+    attr(N, T, V, H, S), append(_, [Pin], H),
+    A = pr(Pin, Ps) , member(Pout, Ps),
+    append(H, [Pout], Ho)
     .
 
-attr(X, N, T, V, P, H, do(A, S)) :-
-    attr(X, N, T, V, P, H, S), A \= pr(P, Ps)
+attr(N, T, V, H, do(A, S)) :-
+    attr(N, T, V, H, S), append(_, [P], H),
+    A \= pr(P, Ps)
     .
 
-attr(X, N, T, V, P, HP, do(A, S)) :-
-    prop_attr(X, N, T, V, Pin, P, H, S),
-    A == end(P),
-    append(H, [P], HP)
+attr(N, T, V, H, do(A, S)) :-
+    prop_attr(N, T, V, H, S), append(_, [P], H),
+    A == end(P)
     .
 
 
