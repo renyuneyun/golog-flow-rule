@@ -27,7 +27,7 @@ poss(end(Pout), S) :- true.
 % successor-state axioms
 
 prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
-    prop_obligation(Ob, XH, Cond, Pin, Pout, S),
+    prop_obligation(Ob, XH, Cond, Pin, Pout, S), append([X], H, XH),
     \+ (
         prop_attr(X, N, T, V, Pin, Pout, H, S),
         (
@@ -77,15 +77,10 @@ obligation(Ob, XH, Cond, P, do(A, S)) :-
     obligation(Ob, XH, Cond, P, S), A \= pr(P, Ps)
     .
 
-obligation(Ob, [X, P], Cond, P, do(A, S)) :-
-    prop_obligation(Ob, [X, []], Cond, Pin, P, S),
-    A = end(P)
-    .
-
-obligation(Ob, [XH, P], Cond, P, do(A, S)) :-
+obligation(Ob, XHP, Cond, P, do(A, S)) :-
     prop_obligation(Ob, XH, Cond, Pin, P, S),
-    \+ [X, []] = XH,
-    A = end(P)
+    A = end(P),
+    append(XH, [P], XHP)
     .
 
 prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
@@ -210,15 +205,10 @@ attr(X, N, T, V, P, H, do(A, S)) :-
     attr(X, N, T, V, P, H, S), A \= pr(P, Ps)
     .
 
-attr(X, N, T, V, P, [P], do(A, S)) :-
-    prop_attr(X, N, T, V, Pin, P, [], S),
-    A == end(P)
-    .
-
-attr(X, N, T, V, P, [H, P], do(A, S)) :-
+attr(X, N, T, V, P, HP, do(A, S)) :-
     prop_attr(X, N, T, V, Pin, P, H, S),
-    \+ H = [],
-    A == end(P)
+    A == end(P),
+    append(H, [P], HP)
     .
 
 

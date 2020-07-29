@@ -6,9 +6,9 @@
 
 
 attr(a, name, str, "UoE", ai, [], s0).
-obligation(credit, [a, []], null, ai, s0).
+obligation(credit, [a], null, ai, s0).
 attr(b, sens, col, 1, ai, [], s0).
-obligation(hide, [b, []], null, ai, s0).
+obligation(hide, [b], null, ai, s0).
 attr(c, internal-1, credit, "ZR", ai, [], s0).
 
 
