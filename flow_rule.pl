@@ -1,4 +1,4 @@
-:- multifile attr/6.
+:- multifile attr/7.
 :- multifile obligation/5.
 
 % Golog interpreter
@@ -26,10 +26,10 @@ poss(end(Pout), S) :- true.
 
 % successor-state axioms
 
-prop_obligation(Ob, X, Cond, Pin, Pout, do(A, S)) :-
-    prop_obligation(Ob, X, Cond, Pin, Pout, S),
+prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
+    prop_obligation(Ob, XH, Cond, Pin, Pout, S),
     \+ (
-        % prop_attr(X, N, T, V, Pin, Pout, S),
+        prop_attr(X, N, T, V, Pin, Pout, H, S),
         (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -68,22 +68,28 @@ prop_obligation(Ob, X, Cond, Pin, Pout, do(A, S)) :-
     )
     .
 
-prop_obligation(Ob, X, Cond, Pin, Pout, do(A, S)) :-
-    obligation(Ob, X, Cond, Pin, S),
+prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
+    obligation(Ob, XH, Cond, Pin, S),
     A = pr(Pin, Ps), member(Pout, Ps)
     .
 
-obligation(Ob, X, Cond, P, do(A, S)) :-
-    obligation(Ob, X, Cond, P, S), A \= pr(P, Ps)
+obligation(Ob, XH, Cond, P, do(A, S)) :-
+    obligation(Ob, XH, Cond, P, S), A \= pr(P, Ps)
     .
 
-obligation(Ob, X, Cond, P, do(A, S)) :-
-    prop_obligation(Ob, X, Cond, Pin, P, S),
+obligation(Ob, [X, P], Cond, P, do(A, S)) :-
+    prop_obligation(Ob, [X, []], Cond, Pin, P, S),
     A = end(P)
     .
 
-prop_attr(X, N, T, V, Pin, Pout, do(A, S)) :-
-    prop_attr(X, N, T, V, Pin, Pout, S),
+obligation(Ob, [XH, P], Cond, P, do(A, S)) :-
+    prop_obligation(Ob, XH, Cond, Pin, P, S),
+    \+ [X, []] = XH,
+    A = end(P)
+    .
+
+prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
+    prop_attr(X, N, T, V, Pin, Pout, H, S),
     \+ (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -157,8 +163,8 @@ prop_attr(X, N, T, V, Pin, Pout, do(A, S)) :-
     )
     .
 
-prop_attr(X, N, T, V, Pin, Pout, do(A, S)) :-
-    prop_attr(X, N, Told, Vold, Pin, Pout, S),
+prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
+    prop_attr(X, N, Told, Vold, Pin, Pout, H, S),
     (
         A = edit(N, Told, Vold, T, V, Pin, Pout);
         A = edit(N, Told, Vold, T, V, Pin, *);
@@ -195,17 +201,23 @@ prop_attr(X, N, T, V, Pin, Pout, do(A, S)) :-
     )
     .
 
-prop_attr(X, N, T, V, Pin, Pout, do(A, S)) :-
-    attr(X, N, T, V, Pin, S),
+prop_attr(X, N, T, V, Pin, Pout, H, do(A, S)) :-
+    attr(X, N, T, V, Pin, H, S),
     A = pr(Pin, Ps) , member(Pout, Ps)
     .
 
-attr(X, N, T, V, P, do(A, S)) :-
-    attr(X, N, T, V, P, S), A \= pr(P, Ps)
+attr(X, N, T, V, P, H, do(A, S)) :-
+    attr(X, N, T, V, P, H, S), A \= pr(P, Ps)
     .
 
-attr(X, N, T, V, P, do(A, S)) :-
-    prop_attr(X, N, T, V, Pin, P, S),
+attr(X, N, T, V, P, [P], do(A, S)) :-
+    prop_attr(X, N, T, V, Pin, P, [], S),
+    A == end(P)
+    .
+
+attr(X, N, T, V, P, [H, P], do(A, S)) :-
+    prop_attr(X, N, T, V, Pin, P, H, S),
+    \+ H = [],
     A == end(P)
     .
 
