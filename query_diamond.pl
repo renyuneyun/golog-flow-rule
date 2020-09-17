@@ -10,6 +10,7 @@ obligation(credit, [a, ai], null, ai, s0).
 attr(sens, col, 1, [b, ai], s0).
 obligation(hide, [b, ai], null, ai, s0).
 attr(internal-1, credit, "ZR", [c, ai], s0).
+obligation(dummy, null, null, ai, s0).
 
 
 % :- do(pr(ai, [ao1, ao2]) : end(ao1) : end(ao2) :

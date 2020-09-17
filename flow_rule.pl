@@ -29,7 +29,7 @@ poss(end(Pout), S) :- true.
 prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
     prop_obligation(Ob, XH, Cond, Pin, Pout, S),
     \+ (
-        prop_attr(N, T, V, XH, S),
+        prop_attr(N, T, V, XHP, S), append(XH, [Pout], XHP),
         (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -75,6 +75,11 @@ prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
 
 obligation(Ob, XH, Cond, P, do(A, S)) :-
     obligation(Ob, XH, Cond, P, S), A \= pr(P, Ps)
+    .
+
+obligation(Ob, null, Cond, P, do(A, S)) :-
+    prop_obligation(Ob, null, Cond, Pin, P, S),
+    A = end(P)
     .
 
 obligation(Ob, XHP, Cond, P, do(A, S)) :-
@@ -209,7 +214,7 @@ attr(N, T, V, H, do(A, S)) :-
 
 attr(N, T, V, H, do(A, S)) :-
     prop_attr(N, T, V, H, S), append(_, [P], H),
-    A == end(P)
+    A = end(P)
     .
 
 
