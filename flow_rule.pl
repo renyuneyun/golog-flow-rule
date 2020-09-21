@@ -68,23 +68,22 @@ prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
     )
     .
 
-prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
-    obligation(Ob, XH, Cond, Pin, S),
-    A = pr(Pin, Ps), member(Pout, Ps)
+prop_obligation(Ob, XH, Cond, Pin, Pout, do(pr(Pin, Ps), S)) :-
+    member(Pout, Ps),
+    obligation(Ob, XH, Cond, Pin, S)
     .
 
 obligation(Ob, XH, Cond, P, do(A, S)) :-
-    obligation(Ob, XH, Cond, P, S), A \= pr(P, Ps)
+    obligation(Ob, XH, Cond, P, S),
+    A \= pr(P, _Ps)
     .
 
-obligation(Ob, null, Cond, P, do(A, S)) :-
-    prop_obligation(Ob, null, Cond, Pin, P, S),
-    A = end(P)
+obligation(Ob, null, Cond, P, do(end(P), S)) :-
+    prop_obligation(Ob, null, Cond, Pin, P, S)
     .
 
-obligation(Ob, XHP, Cond, P, do(A, S)) :-
+obligation(Ob, XHP, Cond, P, do(end(P), S)) :-
     prop_obligation(Ob, XH, Cond, Pin, P, S),
-    A = end(P),
     append(XH, [P], XHP)
     .
 
@@ -212,9 +211,8 @@ attr(N, T, V, H, do(A, S)) :-
     A \= pr(P, Ps)
     .
 
-attr(N, T, V, H, do(A, S)) :-
-    prop_attr(N, T, V, H, S), append(_, [P], H),
-    A = end(P)
+attr(N, T, V, H, do(end(P), S)) :-
+    prop_attr(N, T, V, H, S), append(_, [P], H)
     .
 
 
