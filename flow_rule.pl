@@ -29,7 +29,7 @@ poss(end(Pout), S) :- true.
 prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
     prop_obligation(Ob, XH, Cond, Pin, Pout, S),
     \+ (
-        prop_attr(N, T, V, XHP, S), append(XH, [Pout], XHP),
+        prop_attr(N, T, V, XHP, S), XHP = [Pout|XH],
         (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -83,12 +83,12 @@ obligation(Ob, null, Cond, P, do(end(P), S)) :-
     .
 
 obligation(Ob, XHP, Cond, P, do(end(P), S)) :-
-    prop_obligation(Ob, XH, Cond, Pin, P, S),
-    append(XH, [P], XHP)
+    prop_obligation(Ob, XH, Cond, Pin, P, S), XH = [_|_],
+    XHP = [P|XH]
     .
 
 prop_attr(N, T, V, H, do(A, S)) :-
-    prop_attr(N, T, V, H, S), append(_, [Pin, Pout], H),
+    prop_attr(N, T, V, H, S), H = [Pout|[Pin|_]],
     \+ (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -163,7 +163,7 @@ prop_attr(N, T, V, H, do(A, S)) :-
     .
 
 prop_attr(N, T, V, H, do(A, S)) :-
-    prop_attr(N, Told, Vold, H, S), append(_, [Pin, Pout], H),
+    prop_attr(N, Told, Vold, H, S), H = [Pout|[Pin|_]],
     (
         A = edit(N, Told, Vold, T, V, Pin, Pout);
         A = edit(N, Told, Vold, T, V, Pin, *);
@@ -200,19 +200,19 @@ prop_attr(N, T, V, H, do(A, S)) :-
     )
     .
 
-prop_attr(N, T, V, Ho, do(A, S)) :-
-    attr(N, T, V, H, S), append(_, [Pin], H),
-    A = pr(Pin, Ps) , member(Pout, Ps),
-    append(H, [Pout], Ho)
+prop_attr(N, T, V, Ho, do(pr(Pin, Ps), S)) :-
+    attr(N, T, V, H, S), H = [Pin|_],
+    member(Pout, Ps),
+    Ho = [Pout|H]
     .
 
 attr(N, T, V, H, do(A, S)) :-
-    attr(N, T, V, H, S), append(_, [P], H),
+    attr(N, T, V, H, S), H = [P|_],
     A \= pr(P, Ps)
     .
 
 attr(N, T, V, H, do(end(P), S)) :-
-    prop_attr(N, T, V, H, S), append(_, [P], H)
+    prop_attr(N, T, V, H, S), H = [P|_]
     .
 
 
