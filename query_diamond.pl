@@ -5,11 +5,11 @@
 :- [helper].
 
 
-attr(name, str, "UoE", [a, ai], s0).
-obligation(credit, [a, ai], null, ai, s0).
-attr(sens, col, 1, [b, ai], s0).
-obligation(hide, [b, ai], null, ai, s0).
-attr(internal-1, credit, "ZR", [c, ai], s0).
+attr(name, str, "UoE", [ai, a], s0).
+obligation(credit, [ai, a], null, ai, s0).
+attr(sens, col, 1, [ai, b], s0).
+obligation(hide, [ai, b], null, ai, s0).
+attr(internal-1, credit, "ZR", [ai, c], s0).
 obligation(dummy, null, null, ai, s0).
 
 
