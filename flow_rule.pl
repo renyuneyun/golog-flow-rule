@@ -29,7 +29,7 @@ poss(end(Pout), S) :- true.
 prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
     prop_obligation(Ob, XH, Cond, Pin, Pout, S),
     \+ (
-        prop_attr(N, T, V, XHP, S), XHP = [Pout|XH],
+        prop_attr(N, T, V, [Pout|XH], S),
         (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -82,14 +82,13 @@ obligation(Ob, null, Cond, P, do(end(P), S)) :-
     prop_obligation(Ob, null, Cond, Pin, P, S)
     .
 
-obligation(Ob, XHP, Cond, P, do(end(P), S)) :-
+obligation(Ob, [P|XH1], Cond, P, do(end(P), S)) :-
     prop_obligation(Ob, XH, Cond, Pin, P, S),
-    XH = [Pin|XH1],
-    XHP = [P|XH1]
+    XH = [Pin|XH1]
     .
 
 prop_attr(N, T, V, H, do(A, S)) :-
-    prop_attr(N, T, V, H, S), H = [Pout|[Pin|_]],
+    H = [Pout|[Pin|_]],
     \+ (
             A = del(N, T, V, Pin, Pout);
             A = del(N, T, V, Pin, *);
@@ -160,11 +159,11 @@ prop_attr(N, T, V, H, do(A, S)) :-
             ), (T2 \== T; V2 \== V)
         );
         A = end(Pout)
-    )
+    ), prop_attr(N, T, V, H, S)
     .
 
 prop_attr(N, T, V, H, do(A, S)) :-
-    prop_attr(N, Told, Vold, H, S), H = [Pout|[Pin|_]],
+    H = [Pout|[Pin|_]],
     (
         A = edit(N, Told, Vold, T, V, Pin, Pout);
         A = edit(N, Told, Vold, T, V, Pin, *);
@@ -198,23 +197,22 @@ prop_attr(N, T, V, H, do(A, S)) :-
         A = edit(*, *, *, T, V, Pin, *);
         A = edit(*, *, *, T, V, *, Pout);
         A = edit(*, *, *, T, V, *, *)
-    )
+    ), prop_attr(N, Told, Vold, H, S)
     .
 
-prop_attr(N, T, V, Ho, do(pr(Pin, Ps), S)) :-
-    attr(N, T, V, H, S), H = [Pin|_],
-    member(Pout, Ps),
-    Ho = [Pout|H]
+prop_attr(N, T, V, [Pout|H], do(pr(Pin, Ps), S)) :-
+    member(Pout, Ps), H = [Pin|_],
+    attr(N, T, V, H, S)
     .
 
 attr(N, T, V, H, do(A, S)) :-
-    attr(N, T, V, H, S), H = [P|_],
-    A \= pr(P, Ps)
+    H = [P|_], A \= pr(P, Ps),
+    attr(N, T, V, H, S)
     .
 
 attr(N, T, V, Ho, do(end(P), S)) :-
-    prop_attr(N, T, V, H, S), H = [P|[Pin|H1]],
-    Ho = [P|H1]
+    Ho = [P|H1], H = [P|[_Pin|H1]],
+    prop_attr(N, T, V, H, S)
     .
 
 
