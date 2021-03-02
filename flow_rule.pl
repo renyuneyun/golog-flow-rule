@@ -24,66 +24,76 @@ poss(del(N, T, V, Pin, Pout), S) :- true.
 
 poss(end(Pout), S) :- true.
 
+% helpers
+
+prepend_to_all([], P, []).
+
+prepend_to_all([H|T], P, [[P|H]|Rest]) :-
+    prepend_to_all(T, P, Rest)
+    .
+
+prop_attr_and_del(XH, Pin, Pout, A, S) :-
+    prop_attr(N, T, V, [Pout|XH], S),
+    (
+        A = del(N, T, V, Pin, Pout);
+        A = del(N, T, V, Pin, *);
+        A = del(N, T, V, *, Pout);
+        A = del(N, T, V, *, *);
+        A = del(N, T, *, Pin, Pout);
+        A = del(N, T, *, Pin, *);
+        A = del(N, T, *, *, Pout);
+        A = del(N, T, *, *, *);
+        A = del(N, *, V, Pin, Pout);
+        A = del(N, *, V, Pin, *);
+        A = del(N, *, V, *, Pout);
+        A = del(N, *, V, *, *);
+        A = del(N, *, *, Pin, Pout);
+        A = del(N, *, *, Pin, *);
+        A = del(N, *, *, *, Pout);
+        A = del(N, *, *, *, *);
+        A = del(*, T, V, Pin, Pout);
+        A = del(*, T, V, Pin, *);
+        A = del(*, T, V, *, Pout);
+        A = del(*, T, V, *, *);
+        A = del(*, T, *, Pin, Pout);
+        A = del(*, T, *, Pin, *);
+        A = del(*, T, *, *, Pout);
+        A = del(*, T, *, *, *);
+        A = del(*, *, V, Pin, Pout);
+        A = del(*, *, V, Pin, *);
+        A = del(*, *, V, *, Pout);
+        A = del(*, *, V, *, *);
+        A = del(*, *, *, Pin, Pout);
+        A = del(*, *, *, Pin, *);
+        A = del(*, *, *, *, Pout);
+        A = del(*, *, *, *, *)
+    )
+    .
+
 % successor-state axioms
 
-prop_obligation(Ob, XH, Cond, Pin, Pout, do(A, S)) :-
-    prop_obligation(Ob, XH, Cond, Pin, Pout, S),
+prop_obligation(Ob, BHL, Cond, Pin, Pout, do(A, S)) :-
+    prop_obligation(Ob, BHL, Cond, Pin, Pout, S),
     \+ (
-        prop_attr(N, T, V, [Pout|XH], S),
-        (
-            A = del(N, T, V, Pin, Pout);
-            A = del(N, T, V, Pin, *);
-            A = del(N, T, V, *, Pout);
-            A = del(N, T, V, *, *);
-            A = del(N, T, *, Pin, Pout);
-            A = del(N, T, *, Pin, *);
-            A = del(N, T, *, *, Pout);
-            A = del(N, T, *, *, *);
-            A = del(N, *, V, Pin, Pout);
-            A = del(N, *, V, Pin, *);
-            A = del(N, *, V, *, Pout);
-            A = del(N, *, V, *, *);
-            A = del(N, *, *, Pin, Pout);
-            A = del(N, *, *, Pin, *);
-            A = del(N, *, *, *, Pout);
-            A = del(N, *, *, *, *);
-            A = del(*, T, V, Pin, Pout);
-            A = del(*, T, V, Pin, *);
-            A = del(*, T, V, *, Pout);
-            A = del(*, T, V, *, *);
-            A = del(*, T, *, Pin, Pout);
-            A = del(*, T, *, Pin, *);
-            A = del(*, T, *, *, Pout);
-            A = del(*, T, *, *, *);
-            A = del(*, *, V, Pin, Pout);
-            A = del(*, *, V, Pin, *);
-            A = del(*, *, V, *, Pout);
-            A = del(*, *, V, *, *);
-            A = del(*, *, *, Pin, Pout);
-            A = del(*, *, *, Pin, *);
-            A = del(*, *, *, *, Pout);
-            A = del(*, *, *, *, *)
-        );
+        (member(XH, BHL),
+        prop_attr_and_del(XH, Pin, Pout, A, S));
         A = end(Pout)
     )
     .
 
-prop_obligation(Ob, XH, Cond, Pin, Pout, do(pr(Pin, Ps), S)) :-
+prop_obligation(Ob, BHL, Cond, Pin, Pout, do(pr(Pin, Ps), S)) :-
     member(Pout, Ps),
-    obligation(Ob, XH, Cond, Pin, S)
+    obligation(Ob, BHL, Cond, Pin, S)
     .
 
-obligation(Ob, XH, Cond, P, do(A, S)) :-
-    obligation(Ob, XH, Cond, P, S),
+obligation(Ob, BHL, Cond, P, do(A, S)) :-
+    obligation(Ob, BHL, Cond, P, S),
     A \= pr(P, _Ps)
     .
 
-obligation(Ob, null, Cond, P, do(end(P), S)) :-
-    prop_obligation(Ob, null, Cond, Pin, P, S)
-    .
-
-obligation(Ob, [P|XH], Cond, P, do(end(P), S)) :-
-    XH = [_|_], prop_obligation(Ob, XH, Cond, Pin, P, S)
+obligation(Ob, BHL, Cond, P, do(end(P), S)) :-
+    prop_obligation(Ob, BHL0, Cond, Pin, P, S),
+    prepend_to_all(BHL0, P, BHL)
     .
 
 prop_attr(N, T, V, H, do(A, S)) :-
@@ -218,5 +228,5 @@ attr(N, T, V, H, do(end(P), S)) :-
 % Maybe useful for Golog (never proven to be useful)
 restoreSitArg(attr(N,T,V,H),S,attr(N,T,V,H,S)).
 restoreSitArg(prop_attr(N,T,V,H),S,prop_attr(N,T,V,H,S)).
-restoreSitArg(obligation(Ob,X,Cond,Pin),S,obligation(Ob,X,Cond,Pin,S)).
-restoreSitArg(prop_obligation(Ob,X,Cond,Pin,Pout),S,prop_obligation(Ob,X,Cond,Pin,Pout,S)).
+restoreSitArg(obligation(Ob,BHL,Cond,Pin),S,obligation(Ob,XHL,BHL,Cond,Pin,S)).
+restoreSitArg(prop_obligation(Ob,BHL,Cond,Pin,Pout),S,prop_obligation(Ob,XHL,BHL,Cond,Pin,Pout,S)).
