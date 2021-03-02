@@ -1,18 +1,18 @@
 %%% Sample queries for debugging
 :- multifile attr/5.
-:- multifile obligation/5.
+:- multifile obligation/6.
 
 :- [helper].
 
 
 attr(name, str, "UoE", [ai, a], s0).
-obligation(credit, [[ai, a]], null, ai, s0).
+obligation(credit, [], [[ai, a]], null, ai, s0).
 attr(place, str, "Earth", [ai, z], s0).
-obligation(cite, [[ai, z]], null, ai, s0).
+obligation(cite, [], [[ai, z]], null, ai, s0).
 attr(sens, col, 1, [ai, b], s0).
-obligation(hide, [[ai, b]], null, ai, s0).
+obligation(hide, [[ai, b]], [], null, ai, s0).
 attr(internal-1, credit, "ZR", [ai, c], s0).
-obligation(dummy, [], null, ai, s0).
+obligation(dummy, [], [], null, ai, s0).
 
 
 % :- do(pr(ai, [ao1, ao2]) : end(ao1) : end(ao2) :

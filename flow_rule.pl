@@ -1,5 +1,5 @@
 :- multifile attr/5.
-:- multifile obligation/5.
+:- multifile obligation/6.
 
 % Golog interpreter
 :- [golog_swi].
@@ -72,28 +72,28 @@ prop_attr_and_del(XH, Pin, Pout, A, S) :-
 
 % successor-state axioms
 
-prop_obligation(Ob, BHL, Cond, Pin, Pout, do(A, S)) :-
-    prop_obligation(Ob, BHL, Cond, Pin, Pout, S),
+prop_obligation(Ob, XHL, BHL, Cond, Pin, Pout, do(A, S)) :-
+    prop_obligation(Ob, XHL, BHL, Cond, Pin, Pout, S),
     \+ (
-        (member(XH, BHL),
+        ((member(XH, XHL); member(XH, BHL)),
         prop_attr_and_del(XH, Pin, Pout, A, S));
         A = end(Pout)
     )
     .
 
-prop_obligation(Ob, BHL, Cond, Pin, Pout, do(pr(Pin, Ps), S)) :-
+prop_obligation(Ob, XHL, BHL, Cond, Pin, Pout, do(pr(Pin, Ps), S)) :-
     member(Pout, Ps),
-    obligation(Ob, BHL, Cond, Pin, S)
+    obligation(Ob, XHL, BHL, Cond, Pin, S)
     .
 
-obligation(Ob, BHL, Cond, P, do(A, S)) :-
-    obligation(Ob, BHL, Cond, P, S),
+obligation(Ob, XHL, BHL, Cond, P, do(A, S)) :-
+    obligation(Ob, XHL, BHL, Cond, P, S),
     A \= pr(P, _Ps)
     .
 
-obligation(Ob, BHL, Cond, P, do(end(P), S)) :-
-    prop_obligation(Ob, BHL0, Cond, Pin, P, S),
-    prepend_to_all(BHL0, P, BHL)
+obligation(Ob, XHL, BHL, Cond, P, do(end(P), S)) :-
+    prop_obligation(Ob, XHL0, BHL0, Cond, Pin, P, S),
+    prepend_to_all(XHL0, P, XHL), prepend_to_all(BHL0, P, BHL)
     .
 
 prop_attr(N, T, V, H, do(A, S)) :-
@@ -228,5 +228,5 @@ attr(N, T, V, H, do(end(P), S)) :-
 % Maybe useful for Golog (never proven to be useful)
 restoreSitArg(attr(N,T,V,H),S,attr(N,T,V,H,S)).
 restoreSitArg(prop_attr(N,T,V,H),S,prop_attr(N,T,V,H,S)).
-restoreSitArg(obligation(Ob,BHL,Cond,Pin),S,obligation(Ob,XHL,BHL,Cond,Pin,S)).
-restoreSitArg(prop_obligation(Ob,BHL,Cond,Pin,Pout),S,prop_obligation(Ob,XHL,BHL,Cond,Pin,Pout,S)).
+restoreSitArg(obligation(Ob,XHL,BHL,Cond,Pin),S,obligation(Ob,XHL,BHL,Cond,Pin,S)).
+restoreSitArg(prop_obligation(Ob,XHL,BHL,Cond,Pin,Pout),S,prop_obligation(Ob,XHL,BHL,Cond,Pin,Pout,S)).
